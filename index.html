@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PhishLens | URL Risk Analyzer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="ambient"></div>
+    <main class="page">
+      <header class="hero">
+        <div class="eyebrow">Group 12 · CSE 543 · January 2026</div>
+        <h1>Detection and Mitigation of Phishing URLs</h1>
+        <p>
+          Fast, deployment-focused URL testing built to plug into a character-level neural model
+          and robustness evaluation pipeline.
+        </p>
+        <div class="hero-meta">
+          <span class="pill" id="modelStatus">Mock model · heuristic mode</span>
+          <span class="pill subtle">API endpoint: <span class="mono">/api/classify</span></span>
+        </div>
+      </header>
+
+      <section class="card panel">
+        <div class="panel-header">
+          <div>
+            <h2>URL Test Console</h2>
+            <p class="muted">Paste a URL to evaluate phishing risk and explain the signals.</p>
+          </div>
+          <div class="status-chip" id="statusChip">Idle</div>
+        </div>
+        <form id="analyzeForm" class="url-form" autocomplete="off">
+          <label for="urlInput">Target URL</label>
+          <div class="input-row">
+            <input
+              type="text"
+              id="urlInput"
+              name="urlInput"
+              placeholder="https://example.com/login"
+              spellcheck="false"
+              required
+            />
+            <button type="submit" id="analyzeBtn">Analyze</button>
+          </div>
+          <div class="helper-row">
+            <span class="hint">Supports obfuscated patterns, shortened links, and raw domains.</span>
+            <button type="button" class="ghost" id="clearBtn">Clear</button>
+          </div>
+        </form>
+
+        <div class="result-grid">
+          <div class="result-card">
+            <div class="result-label">Risk Score</div>
+            <div class="result-score" id="riskScore">--</div>
+            <div class="result-meter">
+              <div class="result-bar" id="riskBar"></div>
+            </div>
+            <div class="result-sub" id="verdict">Awaiting input</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Model Confidence</div>
+            <div class="result-score" id="confidence">--</div>
+            <div class="result-sub" id="confidenceLabel">No inference yet</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Latest Check</div>
+            <div class="result-score" id="lastChecked">--:--</div>
+            <div class="result-sub" id="checkedUrl">No URL analyzed</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card insights">
+        <div>
+          <h3>Signals & Explanations</h3>
+          <p class="muted">Highlighted features that influence the classification.</p>
+        </div>
+        <ul class="signal-list" id="signalList">
+          <li class="empty">Run an analysis to view detected signals.</li>
+        </ul>
+      </section>
+
+      <section class="card metrics">
+        <h3>Run History</h3>
+        <p class="muted">Most recent URL checks (local session only).</p>
+        <ul class="history" id="historyList">
+          <li class="empty">No runs yet.</li>
+        </ul>
+      </section>
+
+      <section class="card pipeline">
+        <h3>Pipeline Snapshot</h3>
+        <div class="pipeline-grid">
+          <div>
+            <div class="pipeline-title">Input</div>
+            <p class="muted">Raw URLs from social media posts and messages.</p>
+          </div>
+          <div>
+            <div class="pipeline-title">Model Track</div>
+            <p class="muted">Character CNN + lexical baselines evaluated on cross-dataset splits.</p>
+          </div>
+          <div>
+            <div class="pipeline-title">Robustness</div>
+            <p class="muted">Synthetic obfuscations + stress tests to measure degradation.</p>
+          </div>
+          <div>
+            <div class="pipeline-title">Decision</div>
+            <p class="muted">Risk score, confidence, and interpretability cues surfaced to analysts.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
