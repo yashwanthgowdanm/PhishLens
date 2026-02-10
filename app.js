@@ -273,7 +273,16 @@ function renderResult(url, result) {
 
   const time = new Date();
   lastChecked.textContent = time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-  checkedUrl.textContent = url;
+  // Shorten long URLs and style the ellipsis in-place
+  if (url.length > 50) {
+    const shortened = url.slice(0, 30) + "..." + url.slice(-15);
+    checkedUrl.innerHTML = shortened.replace(
+      "...",
+      '<span style="color:gray;font-style:italic">...</span>'
+    );
+  } else {
+    checkedUrl.textContent = url;
+  }
 
   renderSignals(result.signals);
   updateHistory({ url, score: result.score, label: verdictInfo.label, time });
