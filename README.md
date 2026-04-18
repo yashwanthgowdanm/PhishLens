@@ -1,10 +1,3 @@
-Here is a comprehensive and professional `README.md` tailored exactly to your project files, folder structure, and the extensive research detailed in your CSE 543 report. 
-
-You can copy and paste this directly into your repository.
-
-***
-
-```markdown
 # PhishLens: Neural Phishing & Malware URL Detection
 
 [![Python Version](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
