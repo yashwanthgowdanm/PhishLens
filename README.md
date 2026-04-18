@@ -57,7 +57,7 @@ Follow these steps to set up the environment on a local Windows, macOS, or Linux
 ```bash
 # Clone the repository
 git clone [https://github.com/yourusername/GROUP-12-CSE-543.git](https://github.com/yourusername/GROUP-12-CSE-543-YASHWANTH-GOWDA.git)
-cd GROUP-12-CSE-543-YASHWANTH-GOWDA
+cd GROUP-12-CSE-543
 
 # Create and activate a virtual environment
 python -m venv venv
