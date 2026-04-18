@@ -1,0 +1,20 @@
+{
+  "Dataset 2 (Binary)": {
+    "path": "/home/ynolas23/CSE_543_Project/processed_data/dataset2_binary/split_test.csv",
+    "roc_auc": 0.3180545209976237,
+    "accuracy": 0.3416632963664616,
+    "precision_1": 0.3723133054236733,
+    "recall_1": 0.7955919836073767,
+    "f1_1": 0.5072491476276966,
+    "support_1": 20009
+  },
+  "Dataset 3 (Binary)": {
+    "path": "/home/ynolas23/CSE_543_Project/processed_data/dataset3_binary/split_test.csv",
+    "roc_auc": 0.9928796013316816,
+    "accuracy": 0.9698012066495941,
+    "precision_1": 0.9211077844311377,
+    "recall_1": 0.9388637403997762,
+    "f1_1": 0.9299010100501247,
+    "support_1": 19661
+  }
+}
