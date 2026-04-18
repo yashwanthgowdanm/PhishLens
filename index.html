@@ -3,118 +3,332 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>PhishLens | URL Risk Analyzer</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap"
-      rel="stylesheet"
-    />
+    <title>PhishLens | URL Security Review</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="ambient"></div>
+    <div class="backdrop-grid" aria-hidden="true"></div>
+    <div class="backdrop-glow glow-one" aria-hidden="true"></div>
+    <div class="backdrop-glow glow-two" aria-hidden="true"></div>
+
     <main class="page">
-      <header class="hero">
-        <div class="eyebrow">Group 12 · CSE 543</div>
-        <h1>Detection and Mitigation of Phishing URLs</h1>
-        <p>
-          Fast, deployment-focused URL testing built to plug into a character-level neural model
-          and robustness evaluation pipeline.
-        </p>
-        <div class="hero-meta">
-          <span class="pill" id="modelStatus">Mock model · heuristic mode</span>
-          <span class="pill subtle">API endpoint: <span class="mono">/api/classify</span></span>
+      <header class="topbar">
+        <div class="brand-lockup">
+          <div class="brand-mark">PL</div>
+          <div>
+            <div class="brand-name">PhishLens</div>
+            <div class="brand-sub">CSE 543 project demo · local run</div>
+          </div>
+        </div>
+        <div class="topbar-meta">
+          <span class="top-pill live" id="modelStatus">Booting local models</span>
+          <span class="top-pill subtle">
+            Endpoint
+            <span class="mono" id="endpointLabel">/api/classify</span>
+          </span>
         </div>
       </header>
 
-      <section class="card panel">
-        <div class="panel-header">
-          <div>
-            <h2>URL Test Console</h2>
-            <p class="muted">Paste a URL to evaluate phishing risk and explain the signals.</p>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">CSE 543 Group Project</p>
+          <h1>A cleaner way to test our URL detection models.</h1>
+          <p class="hero-lead">
+            This page is the live demo for our project on phishing and malicious URL detection.
+            It lets us test the binary phishing model, the 4-class URL family model, and the
+            mitigation flow in one place.
+          </p>
+          <div class="hero-tags">
+            <span class="hero-tag">Binary CNN</span>
+            <span class="hero-tag">4-class CNN</span>
+            <span class="hero-tag">Stress tests</span>
+            <span class="hero-tag">Cross-dataset checks</span>
+            <span class="hero-tag">Mitigation Workflow</span>
           </div>
-          <div class="status-chip" id="statusChip">Idle</div>
         </div>
-        <form id="analyzeForm" class="url-form" autocomplete="off">
-          <label for="urlInput">Target URL</label>
-          <div class="input-row">
-            <input
-              type="text"
-              id="urlInput"
-              name="urlInput"
-              placeholder="https://example.com/login"
-              spellcheck="false"
-              required
-            />
-            <button type="submit" id="analyzeBtn">Analyze</button>
-          </div>
-          <div class="helper-row">
-            <span class="hint">Supports obfuscated patterns, shortened links, and raw domains.</span>
-            <button type="button" class="ghost" id="clearBtn">Clear</button>
-          </div>
-        </form>
 
-        <div class="result-grid">
-          <div class="result-card">
-            <div class="result-label">Risk Score</div>
-            <div class="result-score" id="riskScore">--</div>
-            <div class="result-meter">
-              <div class="result-bar" id="riskBar"></div>
+        <div class="hero-side">
+          <article class="hero-card">
+            <span class="card-kicker">Project Scope</span>
+            <h2>URL-based detection for links shared on social platforms</h2>
+            <p>
+              The demo stays focused on URLs themselves. We are not building platform-specific
+              integrations here, which matches the proposal.
+            </p>
+          </article>
+          <div class="hero-mini-grid">
+            <article class="mini-stat">
+              <span class="card-kicker">Neural Track</span>
+              <strong>Binary and 4-class CNN models</strong>
+            </article>
+            <article class="mini-stat">
+              <span class="card-kicker">Baseline Track</span>
+              <strong>LogReg · SVM · Random Forest</strong>
+            </article>
+            <article class="mini-stat">
+              <span class="card-kicker">Robustness</span>
+              <strong>Stress tests and dataset shift</strong>
+            </article>
+            <article class="mini-stat">
+              <span class="card-kicker">Action</span>
+              <strong>Allow, review, or block</strong>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <section class="card console">
+          <div class="section-head">
+            <div>
+              <p class="section-kicker">Live Analysis</p>
+              <h2>Operator Console</h2>
+              <p class="muted">
+                Paste a URL and run either the phishing detector or the 4-class model.
+              </p>
             </div>
-            <div class="result-sub" id="verdict">Awaiting input</div>
+            <span class="status-chip" id="statusChip">Idle</span>
           </div>
-          <div class="result-card">
-            <div class="result-label">Model Confidence</div>
-            <div class="result-score" id="confidence">--</div>
-            <div class="result-sub" id="confidenceLabel">No inference yet</div>
+
+          <form id="analyzeForm" class="analyze-form" autocomplete="off">
+            <input type="hidden" id="analysisMode" name="analysisMode" value="binary" />
+
+            <div class="mode-switch" role="tablist" aria-label="Analysis mode">
+              <button type="button" class="mode-btn is-active" data-mode="binary">
+                Binary Risk
+              </button>
+              <button type="button" class="mode-btn" data-mode="multiclass">
+                Multiclass Family
+              </button>
+            </div>
+
+            <p class="mode-hint" id="modeHint">
+              Binary mode scores phishing risk, confidence, and mitigation urgency.
+            </p>
+
+            <label class="field-label" for="urlInput">Target URL</label>
+            <div class="input-row">
+              <input
+                type="text"
+                id="urlInput"
+                name="urlInput"
+                placeholder="https://example.com/login"
+                spellcheck="false"
+                required
+              />
+              <button type="submit" id="analyzeBtn">Run Analysis</button>
+            </div>
+
+            <div class="form-footer">
+              <span class="hint">
+                Works with full URLs, raw domains, long query strings, and common obfuscation patterns.
+              </span>
+              <button type="button" class="ghost" id="clearBtn">Clear</button>
+            </div>
+
+            <div class="sample-chips" aria-label="Sample URLs">
+              <button
+                type="button"
+                class="sample-chip"
+                data-sample="https://www.youtube.com/watch?v=JSRcuXhBwVY"
+              >
+                Legit video URL
+              </button>
+              <button
+                type="button"
+                class="sample-chip"
+                data-sample="https://weblogin.asu.edu/cas/login?service=https%3A%2F%2Ffultonapps%2Easu%2Eedu%2Ftmsadmin%2F"
+              >
+                University login
+              </button>
+              <button
+                type="button"
+                class="sample-chip"
+                data-sample="http://fb.com.accounts.login.userid.407462.fb12m.com/wed15/fbn/"
+              >
+                Suspicious sample
+              </button>
+            </div>
+          </form>
+
+          <div class="result-grid">
+            <article class="result-card featured">
+              <div class="result-label" id="scoreLabel">Risk Score</div>
+              <div class="result-score" id="riskScore">--</div>
+              <div class="result-meter">
+                <div class="result-bar" id="riskBar"></div>
+              </div>
+              <div class="result-sub" id="verdict">Awaiting analysis</div>
+            </article>
+
+            <article class="result-card">
+              <div class="result-label" id="confidenceHeading">Model Confidence</div>
+              <div class="result-score" id="confidence">--</div>
+              <div class="result-sub" id="confidenceLabel">No inference yet</div>
+            </article>
+
+            <article class="result-card">
+              <div class="result-label">Last Timestamp</div>
+              <div class="result-score" id="lastChecked">--:--</div>
+              <div class="result-sub" id="analysisTrack">Binary phishing risk</div>
+            </article>
           </div>
-          <div class="result-card">
-            <div class="result-label">Latest Check</div>
-            <div class="result-score" id="lastChecked">--:--</div>
-            <div class="result-sub" id="checkedUrl">No URL analyzed</div>
+        </section>
+
+        <aside class="card briefing">
+          <div class="section-head compact">
+            <div>
+              <p class="section-kicker">Current Result</p>
+              <h3 id="briefTitle">No URL checked yet</h3>
+              <p class="muted" id="briefSummary">
+                Run a URL to see the model output and the suggested next step.
+              </p>
+            </div>
           </div>
-        </div>
+
+          <div class="target-block">
+            <div class="target-label">Checked URL</div>
+            <div class="target-url mono" id="checkedUrl">No URL checked yet</div>
+          </div>
+
+          <div class="mitigation-panel">
+            <div class="mitigation-topline">
+            <span class="mitigation-badge neutral" id="mitigationBadge">No action yet</span>
+            </div>
+            <div class="mitigation-title" id="mitigationTitle">Awaiting analysis</div>
+            <p class="muted" id="mitigationDetail">
+              The result will suggest whether the URL should be allowed, reviewed, or blocked.
+            </p>
+          </div>
+
+          <section class="probability-panel" id="probabilityCard" hidden>
+            <div class="section-head compact">
+              <div>
+                <p class="section-kicker">Multiclass Output</p>
+                <h3>Class Probabilities</h3>
+              </div>
+            </div>
+            <ul class="probability-list" id="probabilityList">
+              <li class="empty">Run a multiclass analysis to see the class breakdown.</li>
+            </ul>
+          </section>
+        </aside>
       </section>
 
-      <section class="card insights">
-        <div>
-          <h3>Signals & Explanations</h3>
-          <p class="muted">Highlighted features that influence the classification.</p>
-        </div>
-        <ul class="signal-list" id="signalList">
-          <li class="empty">Run an analysis to view detected signals.</li>
-        </ul>
+      <section class="analysis-grid">
+        <section class="card signals-card">
+          <div class="section-head compact">
+            <div>
+              <p class="section-kicker">Explainability</p>
+              <h3>Signals & Reasoning</h3>
+            </div>
+          </div>
+          <ul class="signal-list" id="signalList">
+            <li class="empty">Run an analysis to inspect the strongest contributing signals.</li>
+          </ul>
+        </section>
+
+        <section class="card history-card">
+          <div class="section-head compact">
+            <div>
+              <p class="section-kicker">Session Trace</p>
+              <h3>Run History</h3>
+            </div>
+          </div>
+          <ul class="history" id="historyList">
+            <li class="empty">No runs yet.</li>
+          </ul>
+        </section>
       </section>
 
-      <section class="card metrics">
-        <h3>Run History</h3>
-        <p class="muted">Most recent URL checks (this session).</p>
-        <ul class="history" id="historyList">
-          <li class="empty">No runs yet.</li>
-        </ul>
-      </section>
+      <section class="proposal-grid">
+        <section class="card narrative-card">
+          <div class="section-head compact">
+            <div>
+              <p class="section-kicker">Project Fit</p>
+              <h3>How this page maps to the proposal</h3>
+            </div>
+          </div>
+          <div class="narrative-grid">
+            <article class="narrative-block">
+              <h4>Focus</h4>
+              <p>
+                We use URLs as the main input, which is exactly how the proposal scopes the project.
+              </p>
+            </article>
+            <article class="narrative-block">
+              <h4>Models</h4>
+              <p>
+                The page supports the binary phishing CNN and the 4-class URL family CNN.
+              </p>
+            </article>
+            <article class="narrative-block">
+              <h4>Robustness</h4>
+              <p>
+                Stress-test and cross-dataset results are shown here so we can talk about generalization, not just accuracy.
+              </p>
+            </article>
+            <article class="narrative-block">
+              <h4>Response</h4>
+              <p>
+                Each output includes a suggested response: allow, review, or block.
+              </p>
+            </article>
+          </div>
+        </section>
 
-      <section class="card pipeline">
-        <h3>Pipeline Snapshot</h3>
-        <div class="pipeline-grid">
-          <div>
-            <div class="pipeline-title">Input</div>
-            <p class="muted">Raw URLs from social media posts and messages.</p>
+        <section class="card evaluation-card">
+          <div class="section-head compact">
+            <div>
+              <p class="section-kicker">Saved Results</p>
+              <h3>Latest evaluation snapshot</h3>
+              <p class="muted">Loaded from the most recent local output files.</p>
+            </div>
           </div>
-          <div>
-            <div class="pipeline-title">Model Track</div>
-            <p class="muted">Character CNN + lexical baselines evaluated on cross-dataset splits.</p>
+
+          <div class="metric-grid">
+            <article class="metric-tile">
+              <span class="metric-label">Binary CNN</span>
+              <strong class="metric-value" id="binaryMetricValue">--</strong>
+              <p class="metric-meta" id="binaryMetricMeta">Loading binary test metrics.</p>
+            </article>
+            <article class="metric-tile">
+              <span class="metric-label">Multiclass CNN</span>
+              <strong class="metric-value" id="multiclassMetricValue">--</strong>
+              <p class="metric-meta" id="multiclassMetricMeta">Loading multiclass test metrics.</p>
+            </article>
+            <article class="metric-tile">
+              <span class="metric-label">Best Baseline</span>
+              <strong class="metric-value" id="baselineMetricValue">--</strong>
+              <p class="metric-meta" id="baselineMetricMeta">Loading baseline comparison.</p>
+            </article>
+            <article class="metric-tile">
+              <span class="metric-label">Stress Test</span>
+              <strong class="metric-value" id="robustnessMetricValue">--</strong>
+              <p class="metric-meta" id="robustnessMetricMeta">Loading robustness degradation.</p>
+            </article>
+            <article class="metric-tile">
+              <span class="metric-label">Cross-Dataset</span>
+              <strong class="metric-value" id="generalizationMetricValue">--</strong>
+              <p class="metric-meta" id="generalizationMetricMeta">Loading generalization results.</p>
+            </article>
           </div>
-          <div>
-            <div class="pipeline-title">Robustness</div>
-            <p class="muted">Synthetic obfuscations + stress tests to measure degradation.</p>
+
+          <div class="evidence-strip">
+            <div class="chart-frame">
+              <img
+                src="outputs/robustness_chart.png"
+                alt="Robustness chart comparing clean performance with stress-test performance"
+              />
+            </div>
+            <div class="insight-frame">
+              <h4>Notes</h4>
+              <ul class="insight-list" id="evaluationInsights">
+                <li>Loading saved outputs.</li>
+              </ul>
+            </div>
           </div>
-          <div>
-            <div class="pipeline-title">Decision</div>
-            <p class="muted">Risk score, confidence, and interpretability cues surfaced to analysts.</p>
-          </div>
-        </div>
+        </section>
       </section>
     </main>
 
