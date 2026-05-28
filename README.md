@@ -56,8 +56,8 @@ Follow these steps to set up the environment on a local Windows, macOS, or Linux
 
 ```bash
 # Clone the repository
-git clone [https://github.com/SMCxDeathBurger/GROUP-12-CSE-543.git](https://github.com/SMCxDeathBurger/GROUP-12-CSE-543-YASHWANTH-GOWDA.git)
-cd GROUP-12-CSE-543
+git clone https://github.com/yashwanthgowdanm/PhishLens.git
+cd PhishLens
 
 # Create and activate a virtual environment
 python -m venv venv
