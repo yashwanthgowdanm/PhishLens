@@ -18,7 +18,7 @@ Traditional phishing detection relies heavily on manually engineered features (e
 
 ## 📂 Repository Structure
 ```text
-GROUP-12-CSE-543/
+PhishLens/
 │
 ├── outputs/                  # Saved models (.pth), metrics (.json), and charts
 ├── processed_data/           # Cleaned and normalized datasets
